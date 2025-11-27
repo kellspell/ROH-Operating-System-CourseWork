@@ -25,37 +25,37 @@ This journal book serves as a comprehensive reference for the Operating Systems 
 ## Table of Contents
 
 ### [Part I: Foundations of Operating Systems](#part-i-foundations-of-operating-systems)
-**Week 1** - [Operating Systems and Computing Sustainability](Week-1-Journal.md)
+**Week 1** - [Operating Systems and Computing Sustainability](Main/Week-1-Journal.md)
 
 ### [Part II: Linux System Architecture](#part-ii-linux-system-architecture)
-**Week 2** - [Linux Foundations and System Architecture](Week-2-Journal.md)
+**Week 2** - [Linux Foundations and System Architecture](Main/Week-2-Journal.md)
 
 ### [Part III: Process Management and Scheduling](#part-iii-process-management-and-scheduling)
-**Week 3** - [Process Management, Scheduling, and System Performance](Week-3-Journal.md)
+**Week 3** - [Process Management, Scheduling, and System Performance](Main/Week-3-Journal.md)
 
 ### [Part IV: Memory Management](#part-iv-memory-management)
-**Week 4** - [Memory Management and Resource Allocation](Week-4-Journal.md)
+**Week 4** - [Memory Management and Resource Allocation](Main/Week-4-Journal.md)
 
 ### [Part V: Inter-Process Communication](#part-v-inter-process-communication)
-**Week 5** - [Inter-Process Communication (IPC)](Week-5-Jornal.md)
+**Week 5** - [Inter-Process Communication (IPC)](Main/Week-5-Jornal.md)
 
 ### [Part VI: System Review and Integration](#part-vi-system-review-and-integration)
-**Week 6** - [Operating Systems Comprehensive Review](Week-6-Journal.md)
+**Week 6** - [Operating Systems Comprehensive Review](Main/Week-6-Journal.md)
 
 ### [Part VII: Security Fundamentals](#part-vii-security-fundamentals)
-**Week 7** - [Initial Security Configuration](Week-7-Journal.md)
+**Week 7** - [Initial Security Configuration](Main/Week-7-Journal.md)
 
 ### [Part VIII: File Systems and Security Mechanisms](#part-viii-file-systems-and-security-mechanisms)
-**Week 8** - [File System, Storage Performance, and Security Mechanisms](Week-8-Jornal.md)
+**Week 8** - [File System, Storage Performance, and Security Mechanisms](Main/Week-8-Jornal.md)
 
 ### [Part IX: Security Hardening](#part-ix-security-hardening)
-**Week 9** - [System Security and Hardening](Week-9-Jornal.md)
+**Week 9** - [System Security and Hardening](Main/Week-9-Jornal.md)
 
 ---
 
 # Part I: Foundations of Operating Systems
 
-## Week 1: [Operating Systems and Computing Sustainability](Week-1-Journal.md)
+## Week 1: [Operating Systems and Computing Sustainability](Main/Week-1-Journal.md)
 
 **Focus:** Core concepts, architectural patterns, and environmental considerations in modern computing
 
@@ -158,7 +158,7 @@ This journal book serves as a comprehensive reference for the Operating Systems 
 
 # Part II: Linux System Architecture
 
-## Week 2: [Linux Foundations and System Architecture](Week-2-Journal.md)
+## Week 2: [Linux Foundations and System Architecture](Main/Week-2-Journal.md)
 
 **Focus:** Linux-specific implementations, command-line tools, and practical system administration
 
@@ -266,7 +266,7 @@ This journal book serves as a comprehensive reference for the Operating Systems 
 
 # Part III: Process Management and Scheduling
 
-## Week 3: [Process Management, Scheduling, and System Performance](Week-3-Journal.md)
+## Week 3: [Process Management, Scheduling, and System Performance](Main/Week-3-Journal.md)
 
 **Focus:** Advanced process concepts, scheduling algorithms, and performance optimization
 
@@ -387,7 +387,7 @@ This journal book serves as a comprehensive reference for the Operating Systems 
 
 # Part IV: Memory Management
 
-## Week 4: [Memory Management and Resource Allocation](Week-4-Journal.md)
+## Week 4: [Memory Management and Resource Allocation](Main/Week-4-Journal.md)
 
 **Focus:** Memory hierarchies, virtual memory, and containerization
 
@@ -502,7 +502,7 @@ This journal book serves as a comprehensive reference for the Operating Systems 
 
 # Part V: Inter-Process Communication
 
-## Week 5: [Inter-Process Communication (IPC)](Week-5-Jornal.md)
+## Week 5: [Inter-Process Communication (IPC)](Main/Week-5-Jornal.md)
 
 **Focus:** IPC mechanisms, shared memory, message passing, pipes, signals, and synchronization
 
@@ -603,7 +603,7 @@ This journal book serves as a comprehensive reference for the Operating Systems 
 
 # Part VI: System Review and Integration
 
-## Week 6: [Operating Systems Comprehensive Review](Week-6-Journal.md)
+## Week 6: [Operating Systems Comprehensive Review](Main/Week-6-Journal.md)
 
 **Focus:** Integration of OS fundamentals, CPU scheduling, process synchronization, memory management, and IPC
 
@@ -734,7 +734,7 @@ This journal book serves as a comprehensive reference for the Operating Systems 
 
 # Part VII: Security Fundamentals
 
-## Week 7: [Initial Security Configuration](Week-7-Journal.md)
+## Week 7: [Initial Security Configuration](Main/Week-7-Journal.md)
 
 **Focus:** OS security fundamentals, access control models, intrusion detection, and practical security configuration
 
@@ -861,7 +861,7 @@ This journal book serves as a comprehensive reference for the Operating Systems 
 
 # Part VIII: File Systems and Security Mechanisms
 
-## Week 8: [File System, Storage Performance, and Security Mechanisms](Week-8-Jornal.md)
+## Week 8: [File System, Storage Performance, and Security Mechanisms](Main/Week-8-Jornal.md)
 
 **Focus:** File system architecture, storage performance optimization, and advanced security implementation
 
@@ -1003,7 +1003,7 @@ This journal book serves as a comprehensive reference for the Operating Systems 
 
 # Part IX: Security Hardening
 
-## Week 9: [System Security and Hardening](Week-9-Jornal.md)
+## Week 9: [System Security and Hardening](Main/Week-9-Jornal.md)
 
 **Focus:** Security auditing, network assessment, hardening strategies, and best practices
 
