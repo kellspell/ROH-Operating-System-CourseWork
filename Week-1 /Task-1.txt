@@ -1,0 +1,26 @@
+
+Introduction to Operating Systems,
+
+Types of Operating System,
+Operating System Modes, 
+Differences between OS architecture, 
+Architecture Layers,
+System call,
+Process Control,
+Resource Management,
+File Systems,
+
+The OS Evolution Timeline, 
+Contemporary OS Challenges,
+Manufacturing , 
+Operational use,
+Data Centre Impact,
+Energy Consumption Breakdown,
+Hardware Efficiency Strategies,
+performance vs energy efficiency,
+User Experience vs Resource Conservation, 
+Initial cost vs LifeCycle Impact,
+Legacy Support vs Optimization
+
+
+

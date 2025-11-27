@@ -1,0 +1,19 @@
+Memory Management and Resource Allocation,
+Physical vs. Virtual Memory,
+Paging Mechanisms,
+Paging Mechanisms: Advantages and Limitations,
+Segmentation Mechanisms,
+Memory Allocation Strategies,
+Garbage Collection,
+Resource Isolation and Allocation,
+Containerisation Concepts,
+Resource Limits and Quality of Service,
+Memory Monitoring Tools,
+
+
+
+
+
+
+
+

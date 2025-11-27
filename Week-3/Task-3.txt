@@ -1,0 +1,19 @@
+Process Management & System Performance,
+Threads,
+Concurrency Problems,
+Problems with Race Condition Solutions,
+Solving Race Condition,
+Scheduling Algorithm,
+Performance Monitoring,
+Process Fundamentals,
+Process Control Block (PCB),
+Process Lifecycle and State Transitions.
+CPU Scheduling Concepts,
+Scheduling Algorithms: FCFS and SJF,
+Scheduling Algorithms: Priority and Round Robin,
+Multi-threading and Process Synchronization,
+Performance Metrics and KPIs,
+Bottleneck Identification and Analysis,
+Resource Utilization Patterns and Trends,
+
+
