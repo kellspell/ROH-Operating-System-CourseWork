@@ -7,20 +7,20 @@
 
 ---
 
-## Linux Demonstration Video
+## 📹 Linux Demonstration Video
 
 Watch the complete Linux system demonstration showcasing the practical implementation of concepts covered in this course:
 
-**[📹 View 8-Minutes Linux Demonstration](./8-Minutes.mp4)**
+**[🎬 Watch on Vimeo: 8-Minutes Linux Demonstration](https://vimeo.com/1145579534)**
 
-This video demonstrates:
-- Linux command-line operations
-- System administration tasks
-- Security configurations
-- Process management
-- File system operations
+[![Linux Demonstration Video](https://i.vimeocdn.com/video/1993877652-8f8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e_640.jpg)](https://vimeo.com/1145579534)
 
-> **Note:** This is a large video file (560MB) stored using Git LFS (Large File Storage). If the video doesn't display directly, you may need to download it or ensure Git LFS is installed.
+**What's covered in the video:**
+- Linux command-line operations and shell scripting
+- System administration tasks and automation
+- Security configurations and hardening
+- Process management and monitoring
+- File system operations and permissions
 
 ---
 
