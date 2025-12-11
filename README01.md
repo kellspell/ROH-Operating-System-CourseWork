@@ -7,6 +7,23 @@
 
 ---
 
+## Linux Demonstration Video
+
+Watch the complete Linux system demonstration showcasing the practical implementation of concepts covered in this course:
+
+**[📹 View 8-Minutes Linux Demonstration](./8-Minutes.mp4)**
+
+This video demonstrates:
+- Linux command-line operations
+- System administration tasks
+- Security configurations
+- Process management
+- File system operations
+
+> **Note:** This is a large video file (560MB) stored using Git LFS (Large File Storage). If the video doesn't display directly, you may need to download it or ensure Git LFS is installed.
+
+---
+
 ## About This Journal
 
 This journal book serves as a comprehensive reference for the Operating Systems course, documenting key concepts, principles, and practical applications learned throughout the semester. Each week builds upon previous knowledge, creating a progressive understanding of operating system design, implementation, and management.
