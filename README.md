@@ -11,9 +11,8 @@
 
 Watch the complete Linux system demonstration showcasing the practical implementation of concepts covered in this course:
 
-**[🎬 Watch on Vimeo: 8-Minutes Linux Demonstration](https://vimeo.com/1145579534)**
+**[🎬 Watch Linux Demonstration Video Here](https://vimeo.com/1145579534)**
 
-[![Linux Demonstration Video](https://i.vimeocdn.com/video/1993877652-8f8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e_640.jpg)](https://vimeo.com/1145579534)
 
 **What's covered in the video:**
 - Linux command-line operations and shell scripting
