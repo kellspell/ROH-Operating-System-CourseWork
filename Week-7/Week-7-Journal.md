@@ -1,921 +1,701 @@
-# Week 7 Journal: Initial Security Configuration
+# Week 7 Journal: Process Management and Initial Security Configuration
 
-**Course:** Operating System Security Fundamentals
+**Course:** Operating Systems
 **Instructors:** Tanaya Bowade & Dr Shabih Fatima
 **Date:** Week 7
+**Student:** [Your Name]
 
 ---
 
 ## Table of Contents
-1. [OS Security Fundamentals](#os-security-fundamentals)
-2. [Importance of Initial Security Setup](#importance-of-initial-security-setup)
-3. [OS-Level Vulnerabilities & Impact](#os-level-vulnerabilities--impact)
-4. [Security Models: DAC, MAC, RBAC](#security-models-dac-mac-rbac)
-5. [Mandatory Access Control (MAC) Concepts](#mandatory-access-control-mac-concepts)
-6. [DAC vs. MAC Comparison](#dac-vs-mac-comparison)
-7. [Introduction to Intrusion Detection Systems](#introduction-to-intrusion-detection-systems)
-8. [IDS Components & Workflow](#ids-components--workflow)
-9. [Bash Scripting for System Administration](#bash-scripting-for-system-administration)
-10. [Operating System Modes Review](#operating-system-modes-review)
-11. [Lab Activities](#lab-activities)
-12. [Self-Assessment & Reflection](#self-assessment--reflection)
+1. [Learning Objectives](#learning-objectives)
+2. [Pre-Lab Preparation](#pre-lab-preparation)
+3. [Part 1: Process Fundamentals and Management](#part-1-process-fundamentals-and-management)
+4. [Part 2: SSH Key-Based Authentication Setup](#part-2-ssh-key-based-authentication-setup)
+5. [Part 3: Firewall Configuration and User Management](#part-3-firewall-configuration-and-user-management)
+6. [Reflection](#reflection)
+7. [Conclusion](#conclusion)
 
 ---
 
-## OS Security Fundamentals
+## Learning Objectives
 
-### The AAA Framework
-
-Operating System security fundamentally relies on the "AAA" framework, which ensures that only legitimate users can access resources and that their actions are restricted according to defined policies.
-
-#### 1. Authentication
-- **Definition:** Verifies the identity of a user or process
-- **Question Answered:** "Who are you?"
-- **Methods:**
-  - Usernames and passwords
-  - Biometrics
-  - Digital certificates
-- **Purpose:** Ensures that the entity attempting to access the system is who they claim to be
-
-#### 2. Authorization
-- **Definition:** Determines what an authenticated user or process is permitted to do
-- **Question Answered:** "What can you do?"
-- **Implementation:** Involves defining permissions for specific resources or actions
-- **Purpose:** Restricts users to only the resources and operations they need
-
-#### 3. Access Control
-- **Definition:** Enforces the authorization policies
-- **Mechanism:** The system actively grants or denies requests based on established authorizations
-- **Purpose:** Prevents unauthorized access or actions by ensuring rules are followed
-- **Function:** This is where the system actively implements the security policies
-
-### Key Concept
-The AAA framework works together as a comprehensive security approach:
-1. First, **authenticate** the user (verify identity)
-2. Then, **authorize** what they can do (check permissions)
-3. Finally, **control access** to enforce those permissions (implement the rules)
+This week's lab session focused on:
+- Understanding process lifecycle and states
+- Using command-line tools for process monitoring
+- Managing system processes effectively
+- Implementing coursework security controls
 
 ---
 
-## Importance of Initial Security Setup
+## Pre-Lab Preparation
 
-A robust initial security configuration is paramount to prevent common vulnerabilities that attackers frequently exploit. Proper initial security configuration is the first line of defense against these common vulnerabilities.
-
-### Common Vulnerabilities
-
-#### 1. Default Passwords
-- **Description:** Pre-set, easily guessable passwords (e.g., "admin," "password")
-- **Risk:** Provide direct entry points for unauthorized access
-- **Example:** Router with default password "admin123"
-- **Mitigation:** Change all default passwords immediately upon system installation
-
-#### 2. Unnecessary Services
-- **Description:** Default installations include many services that are not essential
-- **Risk:** Each service represents a potential attack surface
-- **Impact:** More services = more potential vulnerabilities
-- **Mitigation:** Disable all unnecessary services and only enable what's required
-
-#### 3. Improper Permissions
-- **Description:** Incorrect file and directory permissions
-- **Risk:** Allow unauthorized users to access sensitive system files
-- **Impact:** Can lead to data breaches or system compromise
-- **Mitigation:** Implement principle of least privilege for all file permissions
-
-### Attack Vectors
-
-#### Network Exploits
-- **Method:** Default passwords or open network services exploited remotely
-- **Result:** Attackers gain initial system access
-- **Prevention:**
-  - Change default credentials
-  - Close unnecessary ports
-  - Implement firewall rules
-
-#### Local Privilege Escalation
-- **Method:** Improper file permissions or misconfigured services
-- **Result:** Low-privileged user gains higher-level access
-- **Prevention:**
-  - Proper permission management
-  - Regular security audits
-  - Principle of least privilege
+Before the lab session, I watched the following video lectures:
+- ✅ Process Management Fundamentals
+- ✅ Understanding System Monitoring Tools
+- ✅ Process States and Lifecycle
+- ✅ Operating System Structure
 
 ---
 
-## OS-Level Vulnerabilities & Impact
+## Part 1: Process Fundamentals and Management
 
-Understanding common vulnerabilities and their impact on system security is crucial for maintaining a secure operating system.
+### Task 1.1: Exploring Process States
 
-### Common OS Vulnerabilities
+#### Objective
+Learn to view and understand process information using various command-line tools.
 
-#### 1. Buffer Overflows
-- **Description:** Writing data beyond allocated buffer size, potentially overwriting adjacent memory
-- **Impact:** System Crash
-- **Example:** Heartbleed bug in OpenSSL
-- **Risk:** Can lead to arbitrary code execution
-- **Consequences:**
-  - System crashes
-  - Unauthorized code execution
-  - Memory corruption
+#### Commands Executed
 
-#### 2. Race Conditions
-- **Description:** Dependencies on sequence or timing of events
-- **Impact:** Privilege Escalations
-- **Risk:** Can lead to privilege escalation if events don't happen in expected order
-- **Mechanism:** Exploits timing vulnerabilities between operations
-- **Example:** Time-of-check to time-of-use (TOCTOU) vulnerabilities
-
-#### 3. Improper Input Validation
-- **Description:** Failure to sanitize user input
-- **Impact:** Data Leak
-- **Risk:** Can lead to injection attacks (SQL, command injection) or buffer overflows
-- **Types of Attacks:**
-  - SQL injection
-  - Command injection
-  - Cross-site scripting (XSS)
-  - Buffer overflow attacks
-
-#### 4. Use-After-Free Vulnerabilities
-- **Description:** Using memory after it has been freed
-- **Impact:** System Crash
-- **Risk:** Can lead to data corruption, crashes, or arbitrary code execution
-- **Exploitation:** Attackers can manipulate freed memory for malicious purposes
-
-### System Impact
-
-#### System Integrity
-**Definition:** Assurance that information is not altered or destroyed in an unauthorized manner
-
-**When Compromised:**
-- Data can be modified, corrupted, or deleted
-- Unreliable system operations
-- Persistent backdoors or service disruptions
-- Loss of trust in system data
-- Potential for long-term damage
-
-#### Confidentiality
-**Definition:** Ensuring sensitive information is accessed only by authorized individuals
-
-**When Breached:**
-- Private data exposed to unauthorized parties
-- Identity theft or corporate espionage
-- Legal and reputational consequences
-- Regulatory compliance violations
-- Financial losses
-
----
-
-## Security Models: DAC, MAC, RBAC
-
-Access control models define how subjects (users, processes) can access objects (files, resources). Three primary models are widely used in modern operating systems.
-
-### Comparison Table
-
-| Feature | Discretionary Access Control (DAC) | Mandatory Access Control (MAC) | Role-Based Access Control (RBAC) |
-|---------|-----------------------------------|--------------------------------|----------------------------------|
-| **Control Method** | Owner or authorized user grants/revokes permissions | Central authority defines and enforces security labels and rules | Permissions assigned to roles; users assigned to roles |
-| **Flexibility** | High; owners have significant control over their resources | Low; strict, system-wide policies override user discretion | Moderate to High; flexible role definitions, but policies are centralized |
-| **Typical Use Case** | Personal computing, less sensitive corporate environments | High-security systems (e.g., military, government, classified data) | Enterprise systems, large organizations, compliance-driven environments |
-
-### 1. Discretionary Access Control (DAC)
-
-**Characteristics:**
-- Owner-centric permissions
-- Resource owners control access to their files
-- High flexibility
-- User discretion in granting permissions
-
-**Advantages:**
-- Easy to implement and manage
-- Users have control over their own resources
-- Flexible and intuitive
-
-**Disadvantages:**
-- Vulnerable to user errors
-- Permissions can be changed by malicious owners
-- Less secure for sensitive environments
-
-**Examples:**
-- Unix/Linux file permissions
-- Windows NTFS permissions
-
-### 2. Mandatory Access Control (MAC)
-
-**Characteristics:**
-- System-enforced security levels
-- Central authority controls all access decisions
-- Low flexibility
-- Strict, system-wide policies
-
-**Advantages:**
-- High security level
-- Robust against user errors and insider threats
-- Consistent policy enforcement
-
-**Disadvantages:**
-- Complex to implement and manage
-- Less flexible for users
-- Requires careful planning and configuration
-
-**Examples:**
-- SELinux (Security-Enhanced Linux)
-- AppArmor
-- Military/government systems
-
-### 3. Role-Based Access Control (RBAC)
-
-**Characteristics:**
-- Role-privilege mapping
-- Users assigned to roles
-- Moderate to high flexibility
-- Centralized policy management
-
-**Advantages:**
-- Scalable for large organizations
-- Easier to manage than individual permissions
-- Aligns with organizational structure
-
-**Disadvantages:**
-- Can become complex with many roles
-- Requires careful role design
-- Role explosion in large systems
-
-**Examples:**
-- Enterprise systems
-- Database management systems
-- Cloud platforms (AWS IAM, Azure RBAC)
-
----
-
-## Mandatory Access Control (MAC) Concepts
-
-Mandatory Access Control (MAC) is a security model where access decisions are made by a central authority based on security labels assigned to subjects and objects, providing a high level of security by strictly enforcing information flow policies.
-
-### Key Components
-
-#### 1. Reference Monitor
-- **Location:** Core component of the OS kernel
-- **Function:** Mediates all access attempts between subjects and objects
-- **Responsibility:** Enforces security policies by comparing security labels and making access decisions
-- **Characteristics:**
-  - Tamper-proof
-  - Always invoked
-  - Small enough to be analyzed and tested
-  - Cannot be bypassed
-
-**Access Decision Process:**
-1. Subject (User A) with security label "Top Secret" attempts to access Object (File X)
-2. Request goes through Reference Monitor (OS Kernel)
-3. Reference Monitor compares security labels
-4. Access Decision (Allow/Deny) is made based on security policy
-
-#### 2. Security Labels
-- **Assignment:** System-defined labels assigned by administrators
-- **Purpose:** Classify subjects and objects
-- **Function:** Represent sensitivity levels and clearance requirements
-- **Characteristics:**
-  - Cannot be changed by users
-  - Hierarchical or categorical
-  - Determine what accesses are allowed
-  - Enforced at the kernel level
-
-**Common Security Levels:**
-- Top Secret
-- Secret
-- Confidential
-- Unclassified
-
-### Implementation Examples
-
-#### SELinux (Security-Enhanced Linux)
-- **Type:** Policy-driven approach
-- **Mechanism:** Type enforcement, role-based access control, multi-level security
-- **Use Case:** Enterprise servers, government systems
-- **Complexity:** High, but very flexible and powerful
-- **Policy Types:** Targeted, MLS (Multi-Level Security), strict
-
-#### AppArmor
-- **Type:** Path-based security
-- **Mechanism:** Application-level mandatory access control
-- **Use Case:** Desktop systems, servers
-- **Complexity:** Simpler than SELinux
-- **Approach:** Profile-based confinement
-
----
-
-## DAC vs. MAC Comparison
-
-Key differences between Discretionary and Mandatory Access Control models:
-
-| Feature | Discretionary Access Control (DAC) | Mandatory Access Control (MAC) |
-|---------|-----------------------------------|--------------------------------|
-| **Control Method** | Owner-centric; resource owner defines access permissions | System-centric; OS enforces access based on security labels/policies |
-| **Flexibility** | High; owners can easily modify permissions | Low; policies are centrally managed and difficult for users to override |
-| **Management** | Decentralized; managed by individual resource owners | Centralized; managed by system administrators or security policies |
-| **Security Level** | Lower; susceptible to user errors and malicious owners | Higher; robust against user errors and insider threats |
-| **Policy Source** | User-defined permissions (e.g., file permissions) | System-wide security policy (e.g., security labels, clearance levels) |
-| **Example Systems** | Unix/Linux file permissions, Windows NTFS permissions | SELinux, AppArmor, military/government systems |
-
-### When to Use DAC
-- Personal computing environments
-- Small organizations with trusted users
-- Systems with less sensitive data
-- Environments requiring user flexibility
-
-### When to Use MAC
-- Military and government systems
-- High-security environments
-- Systems handling classified information
-- Environments with strict compliance requirements
-- Protection against insider threats
-
----
-
-## Introduction to Intrusion Detection Systems
-
-An Intrusion Detection System (IDS) is a security technology that monitors network or system activities for malicious activities or policy violations and produces reports to a management station. Its primary role is to detect unauthorized access, misuse, or denial-of-service attacks.
-
-### Types of IDS
-
-#### 1. Host-based IDS (HIDS)
-
-**Monitoring Focus:** Monitors activities on a specific host or endpoint
-
-**Data Sources:**
-- System logs
-- File system changes
-- Process activities
-
-**Detection Capabilities:**
-- Internal attacks
-- Unauthorized file access
-- Privilege escalation
-- System configuration changes
-- Local security policy violations
-
-**Example:** A security agent installed on a server that monitors local activities and logs
-
-**Advantages:**
-- Detailed view of host activities
-- Can detect attacks that network IDS might miss
-- Monitors encrypted traffic (after decryption)
-
-**Disadvantages:**
-- Resource intensive on the host
-- Only monitors the local system
-- Can be disabled if host is compromised
-
-#### 2. Network-based IDS (NIDS)
-
-**Monitoring Focus:** Monitors network traffic on a network segment
-
-**Data Sources:**
-- Network packets
-- Headers and payloads in real-time
-- Protocol analysis
-
-**Detection Capabilities:**
-- Port scans
-- DoS attacks
-- Unauthorized protocol usage
-- Network-based exploits
-- Malware propagation
-
-**Example:** A sensor deployed on a network segment that analyzes traffic for attack signatures
-
-**Advantages:**
-- Monitors entire network segment
-- Difficult for attackers to detect
-- No impact on host performance
-
-**Disadvantages:**
-- Cannot see encrypted traffic
-- May miss host-level attacks
-- Can be overwhelmed by high traffic
-
----
-
-## IDS Components & Workflow
-
-### Detection Techniques
-
-#### 1. Signature-based Detection
-
-**Concept:** Identifies known attack patterns or signatures
-
-**How it Works:**
-- Compares network traffic or system logs against a database of known attack signatures
-- Pattern matching against predefined rules
-- Similar to antivirus signature detection
-
-**Advantages:**
-- High accuracy for known threats
-- Low false positives
-- Fast detection
-- Easy to understand and implement
-
-**Disadvantages:**
-- Ineffective against unknown or polymorphic attacks
-- Requires constant signature updates
-- Cannot detect zero-day exploits
-- Must maintain large signature database
-
-**Best For:**
-- Detecting known attacks
-- Compliance requirements
-- Production environments
-
-#### 2. Anomaly-based Detection
-
-**Concept:** Detects deviations from established normal behavior
-
-**How it Works:**
-- Builds a baseline of normal system activity
-- Uses statistical analysis or machine learning
-- Flags deviations as suspicious
-- Learns normal behavior patterns
-
-**Advantages:**
-- Can detect novel or zero-day attacks
-- Identifies previously unknown threats
-- Adapts to environment
-
-**Disadvantages:**
-- Can generate high false positives if baseline is not accurate
-- Requires training period
-- More complex to implement
-- Sensitive to changes in normal behavior
-
-**Best For:**
-- Detecting zero-day attacks
-- Research environments
-- Advanced threat detection
-
-### IDS Workflow
-
-1. **Data Collection**
-   - Gather data from network traffic or system logs
-   - Capture packets or monitor system events
-   - Collect relevant security information
-
-2. **Analysis Engine**
-   - Process collected data
-   - Apply detection rules or algorithms
-   - Compare against signatures or baselines
-   - Identify potential threats
-
-3. **Detection**
-   - Determine if activity is malicious
-   - Evaluate threat level
-   - Classify type of attack
-
-4. **Threat Assessment**
-   - Is this a real threat or false positive?
-   - Decision point in the workflow
-
-5. **Response**
-   - **If Threat:** Generate Alert
-     - Notify security team
-     - Log incident details
-     - Trigger automated responses
-   - **If No Threat:** Continue Monitor
-     - Continue normal monitoring
-     - Update baselines if needed
-
----
-
-## Bash Scripting for System Administration
-
-Automating security tasks for enhanced system protection. Bash scripting automates routine security tasks, enhancing efficiency and consistency.
-
-### Automation Tasks
-
-#### 1. User Auditing and Management
-- **Purpose:** Automating user account management and auditing privileges
-- **Tasks:**
-  - Create/delete user accounts
-  - Monitor user login activity
-  - Audit user privileges
-  - Generate user activity reports
-- **Benefits:** Ensures consistent user management and rapid response to security issues
-
-#### 2. Log File Analysis
-- **Purpose:** Parsing system logs to identify security events and failed logins
-- **Tasks:**
-  - Monitor authentication logs
-  - Detect failed login attempts
-  - Identify suspicious patterns
-  - Generate security reports
-- **Benefits:** Early detection of security incidents and unauthorized access attempts
-
-#### 3. File Permission Control
-- **Purpose:** Enforcing correct file permissions to prevent unauthorized access
-- **Tasks:**
-  - Audit file permissions
-  - Correct improper permissions
-  - Monitor permission changes
-  - Enforce security policies
-- **Benefits:** Maintains security posture and prevents unauthorized access
-
-### Useful Commands
-
-#### chmod - Change File Permissions
-**Purpose:** Modify file and directory permissions
-
-**Example:**
-```bash
-chmod 600 secret.txt
-```
-**Explanation:** Restricts access to the owner only (read and write for owner, no access for group and others)
-
-**Common Permission Modes:**
-- `600`: Owner read/write only
-- `644`: Owner read/write, others read only
-- `755`: Owner full access, others read/execute
-- `700`: Owner full access only
-
-#### chown - Change File Ownership
-**Purpose:** Change file owner and group
-
-**Example:**
-```bash
-chown user:group file.txt
-```
-**Explanation:** Assigns ownership of file.txt to user and group
-
-**Use Cases:**
-- Transfer file ownership
-- Set proper ownership after file creation
-- Correct ownership issues
-
-#### grep - Search Text Patterns
-**Purpose:** Search for patterns in files or output
-
-**Example:**
-```bash
-grep "failed password" /var/log/auth.log
-```
-**Explanation:** Finds failed login attempts in authentication logs
-
-**Security Applications:**
-- Monitor authentication failures
-- Search for error messages
-- Identify suspicious patterns
-- Audit system logs
-
----
-
-## Operating System Modes Review
-
-### User vs. Kernel Mode
-
-| Feature | User Mode | Kernel Mode |
-|---------|-----------|-------------|
-| **Privileges** | Limited access to hardware and critical memory | Full access to all hardware and system memory |
-| **Execution** | User applications, less privileged instructions | Operating system core, device drivers, privileged instructions |
-| **Protection** | Isolated from other user processes | Can directly interact with hardware and manage system resources |
-| **Failure Impact** | Typically crashes only the application | Can crash the entire operating system |
-| **Transition** | System calls (e.g., I/O requests) | Interrupts, exceptions, system calls |
-
-### Key Concepts
-
-#### User Mode
-- **Purpose:** Run user applications safely
-- **Restrictions:** Cannot directly access hardware or critical system resources
-- **Protection:** Applications are isolated from each other and the kernel
-- **Security:** Failures are contained to the application
-- **Example Operations:** Running a text editor, web browser, or user program
-
-#### Kernel Mode
-- **Purpose:** Execute operating system core functions
-- **Privileges:** Full access to all system resources
-- **Responsibility:** Manage hardware, memory, and processes
-- **Risk:** Errors can crash the entire system
-- **Example Operations:** Device driver execution, interrupt handling, system calls
-
-#### Mode Transition
-**When User Mode Switches to Kernel Mode:**
-- System calls (requesting OS services)
-- Hardware interrupts
-- Exceptions or errors
-- I/O operations
-
-**Process:**
-1. User application needs OS service
-2. Makes system call
-3. CPU switches to kernel mode
-4. Kernel executes privileged operation
-5. Returns result to user mode
-6. Application continues execution
-
----
-
-## Lab Activities
-
-### Learning Objectives
-- Understand process lifecycle and states
-- Use command-line tools for process monitoring
-- Manage system processes effectively
-- Implement coursework security controls
-
-### Pre-Lab Preparation
-Required video lectures to watch before lab:
-- Process Management Fundamentals
-- Understanding System Monitoring Tools
-- Process States and Lifecycle
-- Operating System Structure
-
----
-
-### Part 1: Process Fundamentals and Management
-
-#### Task 1.1: Exploring Process States
-
-**Objective:** Learn to view and understand process information
-
-**Commands and Their Purpose:**
-
-1. **View all running processes:**
+**1. Viewing all running processes:**
 ```bash
 ps aux
 ```
 
-**Key Columns:**
-- `USER`: Which user owns the process
-- `PID`: Process identification number
-- `%CPU`: CPU usage percentage
-- `%MEM`: Memory usage percentage
-- `STAT`: Process state
-- `COMMAND`: The command that started the process
+**Screenshot:**
+[Insert screenshot of ps aux output here]
 
-2. **Compare different process listing formats:**
+**Key Columns Identified:**
+- **USER**: The user who owns the process
+- **PID**: Process identification number (unique identifier)
+- **%CPU**: Percentage of CPU usage
+- **%MEM**: Percentage of memory usage
+- **STAT**: Current process state
+- **COMMAND**: The command that started the process
+
+**2. Comparing different process listing formats:**
 ```bash
 ps -ef
 ```
-Shows processes in full format with different column arrangement
 
-3. **View real-time process monitoring:**
+**Screenshot:**
+[Insert screenshot of ps -ef output here]
+
+**Explanation:**
+The `ps -ef` command shows processes in a different format, displaying:
+- Full command paths
+- Parent process IDs (PPID)
+- Start times
+- Different column arrangement compared to `ps aux`
+
+**3. Real-time process monitoring:**
 ```bash
 top
 ```
-Provides dynamic, real-time view of system processes. Press 'q' to quit.
 
-4. **Enhanced monitoring with htop:**
+**Screenshot:**
+[Insert screenshot of top command output here]
+
+**Observations:**
+- Real-time updates of CPU and memory usage
+- Processes sorted by CPU usage by default
+- Interactive interface (press 'q' to quit)
+- Shows system summary at the top (uptime, load average, CPU states, memory usage)
+
+**4. Enhanced monitoring with htop:**
 ```bash
 sudo apt install htop
 htop
 ```
-More user-friendly interface with better visualization
 
-**Process States:**
-- `R`: Running or runnable (on run queue)
-- `S`: Interruptible sleep (waiting for an event)
-- `D`: Uninterruptible sleep (usually I/O)
-- `Z`: Zombie (terminated but not reaped by parent)
-- `T`: Stopped (by job control signal or being traced)
+**Screenshot:**
+[Insert screenshot of htop output here]
 
-#### Task 1.2: Process Relationships and Control
+**Advantages of htop over top:**
+- Color-coded output for better readability
+- Visual representation of CPU and memory usage with bars
+- Mouse support for selecting processes
+- Easier to navigate and more user-friendly
+- Tree view of processes available
 
-**1. View process hierarchy:**
+#### Process States Explained
+
+| State | Symbol | Description |
+|-------|--------|-------------|
+| **Running** | R | Process is currently executing or ready to run |
+| **Sleeping (Interruptible)** | S | Process is waiting for an event to complete (can be interrupted) |
+| **Sleeping (Uninterruptible)** | D | Process is waiting for I/O operations (cannot be interrupted) |
+| **Zombie** | Z | Process has completed but parent hasn't read its exit status |
+| **Stopped** | T | Process has been stopped by job control signal or debugger |
+
+**Examples from my system:**
+[Document specific examples you observed]
+
+---
+
+### Task 1.2: Process Relationships and Control
+
+#### 1. Viewing Process Hierarchy
+
+**Commands:**
 ```bash
 pstree
-pstree -p  # Shows PIDs
+pstree -p
 ```
 
-**2. Start a background process:**
+**Screenshot:**
+[Insert screenshot of pstree output here]
+
+**Explanation:**
+- `pstree` displays processes in a tree structure showing parent-child relationships
+- The `-p` flag shows Process IDs alongside process names
+- Helps understand how processes spawn other processes
+- Shows the init system (systemd) as the root of the process tree
+
+---
+
+#### 2. Background Process Management
+
+**Starting a background process:**
 ```bash
 sleep 300 &
 jobs
 ```
 
-**3. Practice process control:**
-```bash
-sleep 500
-# Press Ctrl+Z to suspend
-jobs
-bg  # Resume in background
-fg  # Bring to foreground
-```
+**Screenshot:**
+[Insert screenshot showing background process and jobs output here]
 
-**4. Practice process termination:**
-```bash
-sleep 600 &
-kill [PID]  # Graceful termination
-
-sleep 600 &
-sleep 600 &
-killall sleep  # Kill all processes with name "sleep"
-```
-
-**Difference between kill and kill -9:**
-- `kill`: Sends SIGTERM (15) - allows graceful shutdown
-- `kill -9`: Sends SIGKILL (9) - forces immediate termination, no cleanup
-
-**5. Experiment with process priority:**
-```bash
-nice -n 10 sleep 400 &
-top
-# Observe the NI (nice) value
-```
-
-**Process Lifecycle:**
-1. **New**: Process is being created
-2. **Ready**: Process is ready to run
-3. **Running**: Process is executing
-4. **Waiting**: Process is waiting for I/O or event
-5. **Terminated**: Process has finished execution
-
-**When to use foreground vs background:**
-- **Foreground**: Interactive tasks requiring user input
-- **Background**: Long-running tasks that don't need interaction
+**Explanation:**
+- The `&` symbol runs the process in the background
+- `jobs` command lists all background jobs in the current shell
+- Each job is assigned a job number (e.g., [1], [2])
 
 ---
 
-### Part 2: SSH Key-Based Authentication Setup
+#### 3. Process Control Practice
 
-#### Task 2.1: Generating SSH Keys
+**Commands executed:**
+```bash
+sleep 500
+# Pressed Ctrl+Z to suspend
+jobs
+bg
+fg
+```
 
-**Generate SSH key pair:**
+**Screenshot:**
+[Insert screenshot showing process control sequence here]
+
+**Process Control Explained:**
+- **Ctrl+Z**: Suspends (stops) the foreground process
+- **jobs**: Lists all jobs with their status (running, stopped)
+- **bg**: Resumes the suspended job in the background
+- **fg**: Brings the background job to the foreground
+
+**When to use foreground vs background:**
+- **Foreground**: For interactive tasks requiring user input (e.g., text editors, interactive shells)
+- **Background**: For long-running tasks that don't need interaction (e.g., file transfers, compilation, backups)
+
+---
+
+#### 4. Process Termination
+
+**Commands executed:**
+```bash
+sleep 600 &
+kill [PID]
+
+sleep 600 &
+sleep 600 &
+killall sleep
+```
+
+**Screenshot:**
+[Insert screenshot showing process termination here]
+
+**Difference between kill and kill -9:**
+
+| Command | Signal | Behavior | Use Case |
+|---------|--------|----------|----------|
+| `kill [PID]` | SIGTERM (15) | Graceful termination - allows process to clean up resources | Default, recommended method |
+| `kill -9 [PID]` | SIGKILL (9) | Forceful termination - immediate kill without cleanup | Use only when process doesn't respond to SIGTERM |
+
+**Why graceful termination is preferred:**
+- Allows process to close files properly
+- Saves state and data
+- Releases resources cleanly
+- Prevents data corruption
+
+---
+
+#### 5. Process Priority Experiment
+
+**Commands executed:**
+```bash
+nice -n 10 sleep 400 &
+top
+```
+
+**Screenshot:**
+[Insert screenshot showing nice value in top here]
+
+**Explanation:**
+- The `nice` command sets the priority of a process
+- Nice values range from -20 (highest priority) to 19 (lowest priority)
+- Default nice value is 0
+- In this example, `-n 10` gives the process lower priority
+- Observed in the NI column in `top` output
+
+---
+
+#### Process Lifecycle Summary
+
+**Process Lifecycle Stages:**
+
+1. **New**: Process is being created
+2. **Ready**: Process is ready to run and waiting for CPU time
+3. **Running**: Process is currently executing on a CPU
+4. **Waiting**: Process is waiting for I/O or an event to occur
+5. **Terminated**: Process has finished execution
+
+**Diagram:**
+```
+  New → Ready ⇄ Running → Terminated
+           ↓      ↑
+           Waiting
+```
+
+**My understanding:**
+[Explain your understanding of how processes transition between states]
+
+---
+
+## Part 2: SSH Key-Based Authentication Setup
+
+### Task 2.1: Generating SSH Keys
+
+**Commands executed:**
 ```bash
 ssh-keygen -t ed25519 -C "your_email@example.com"
 ```
 
-**Steps:**
-1. Accept default location (`~/.ssh/id_ed25519`)
-2. Set a secure passphrase
-3. Keys are generated: private key (`id_ed25519`) and public key (`id_ed25519.pub`)
+**Screenshot:**
+[Insert screenshot showing SSH key generation process here]
 
-**View your public key:**
+**Steps followed:**
+1. Accepted default location: `~/.ssh/id_ed25519`
+2. Set a secure passphrase: [Used strong passphrase]
+3. Keys generated:
+   - Private key: `~/.ssh/id_ed25519` (keep secret!)
+   - Public key: `~/.ssh/id_ed25519.pub` (can be shared)
+
+**Viewing the public key:**
 ```bash
 cat ~/.ssh/id_ed25519.pub
 ```
 
-**Why ed25519 is recommended:**
-- More secure than RSA with smaller key size
-- Faster key generation and verification
-- Better resistance to timing attacks
-- Modern cryptographic algorithm
-- 256-bit security (equivalent to 3072-bit RSA)
+**Screenshot:**
+[Insert screenshot of public key here]
 
-#### Task 2.2: Copying Key to Server
+#### Why ed25519 is Recommended Over RSA
 
-**Copy public key to server:**
+| Feature | ed25519 | RSA |
+|---------|---------|-----|
+| **Key Size** | 256 bits | 2048-4096 bits (larger) |
+| **Security Level** | Equivalent to 3072-bit RSA | Varies by key size |
+| **Speed** | Faster key generation and verification | Slower |
+| **Resistance to Attacks** | Better resistance to timing attacks | Vulnerable to certain attacks |
+| **Modern Standard** | Modern elliptic curve cryptography | Older algorithm |
+
+**My explanation:**
+[Provide your understanding of why ed25519 is better]
+
+---
+
+### Task 2.2: Copying Key to Server
+
+**Commands executed:**
 ```bash
 ssh-copy-id username@server_ip
-# Enter password when prompted
+# Entered password when prompted
 ```
 
-**Test passwordless login:**
+**Screenshot:**
+[Insert screenshot showing ssh-copy-id process here]
+
+**Testing passwordless login:**
 ```bash
 ssh username@server_ip
 ```
 
-**How it works:**
-1. Public key is appended to `~/.ssh/authorized_keys` on server
-2. When connecting, server challenges with public key
-3. Client proves identity with private key
-4. No password needed
+**Screenshot:**
+[Insert screenshot showing successful passwordless SSH connection with visible command prompts showing username@hostname on both systems]
 
-#### Task 2.3: Hardening SSH Configuration
+**How SSH key authentication works:**
+1. Public key is copied to `~/.ssh/authorized_keys` on the server
+2. When connecting, the server challenges the client with the public key
+3. Client proves identity using the private key (without sending it)
+4. No password is needed if keys match
+5. Passphrase (if set) protects the private key locally
 
-**1. Backup original configuration:**
+---
+
+### Task 2.3: Hardening SSH Configuration
+
+#### 1. Backup Original Configuration
+
+**Commands executed:**
 ```bash
 sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.backup
 ```
 
-**2. Edit SSH configuration:**
+**Screenshot:**
+[Insert screenshot here]
+
+**Why backup is important:**
+- Allows reverting changes if something goes wrong
+- Provides reference to original settings
+- Standard security practice before modifying system files
+
+---
+
+#### 2. Editing SSH Configuration
+
+**Commands executed:**
 ```bash
 sudo nano /etc/ssh/sshd_config
 ```
 
-**3. Critical security changes:**
+**Before Configuration:**
+[Insert screenshot of BEFORE sshd_config file showing relevant lines]
+
+**Changes Made:**
 ```
 PasswordAuthentication no
 PubkeyAuthentication yes
 PermitRootLogin no
 ```
 
-**Security Improvements:**
-- `PasswordAuthentication no`: Prevents brute-force password attacks
-- `PubkeyAuthentication yes`: Enables key-based authentication
-- `PermitRootLogin no`: Prevents direct root access, requiring privilege escalation
+**After Configuration:**
+[Insert screenshot of AFTER sshd_config file showing the changes]
 
-**4. Restart SSH service:**
+---
+
+#### 3. Security Improvements Explained
+
+| Setting | Value | Security Benefit |
+|---------|-------|------------------|
+| `PasswordAuthentication` | no | Prevents brute-force password attacks; forces key-based authentication |
+| `PubkeyAuthentication` | yes | Enables SSH key authentication (more secure than passwords) |
+| `PermitRootLogin` | no | Prevents direct root login; requires users to login with regular account and escalate privileges |
+
+**Defense-in-Depth Strategy:**
+By disabling root login, even if an attacker obtains valid credentials, they cannot directly access the root account. They must:
+1. First authenticate as a regular user
+2. Then escalate privileges (which creates an audit trail)
+
+---
+
+#### 4. Restarting SSH Service
+
+**Commands executed:**
 ```bash
 sudo systemctl restart sshd
 ```
 
-**5. Verify changes:**
-Test from different terminal to ensure password authentication is disabled
+**Screenshot:**
+[Insert screenshot here]
+
+**Verification from different terminal:**
+[Insert screenshot showing that password authentication is now disabled]
+
+**Important Note:**
+Before logging out, I tested SSH access from another terminal to ensure key-based authentication works properly. This prevents being locked out of the server.
 
 ---
 
-### Part 3: Firewall Configuration and User Management
+## Part 3: Firewall Configuration and User Management
 
-#### Task 3.1: Implementing Firewall Rules
+### Task 3.1: Implementing Firewall Rules
 
-**1. Check UFW status:**
+#### 1. Checking UFW Status
+
+**Commands executed:**
 ```bash
 sudo ufw status
 ```
 
-**2. Install UFW if needed:**
+**Screenshot:**
+[Insert screenshot of initial UFW status here]
+
+#### 2. Installing UFW (if needed)
+
+**Commands executed:**
 ```bash
 sudo apt update
 sudo apt install ufw
 ```
 
-**3. Set default policies:**
+**Screenshot:**
+[Insert screenshot if installation was needed]
+
+---
+
+#### 3. Setting Default Policies
+
+**Commands executed:**
 ```bash
 sudo ufw default deny incoming
 sudo ufw default allow outgoing
 ```
 
-**Why these defaults?**
-- **Deny incoming**: Blocks all unsolicited incoming connections (whitelist approach)
-- **Allow outgoing**: Permits internal services to communicate externally
+**Screenshot:**
+[Insert screenshot here]
 
-**4. Allow SSH from specific IP:**
+**Why these defaults?**
+
+| Policy | Direction | Justification |
+|--------|-----------|---------------|
+| Deny | Incoming | Blocks all unsolicited incoming connections (whitelist approach) - only explicitly allowed services can receive connections |
+| Allow | Outgoing | Permits internal services to communicate externally - allows software updates, web browsing, etc. |
+
+**Security Principle:**
+This implements a "default deny" security posture - everything is blocked unless explicitly allowed.
+
+---
+
+#### 4. Allowing SSH from Workstation
+
+**Commands executed:**
 ```bash
-sudo ufw allow from workstation_ip to any port 22
+sudo ufw allow from [workstation_ip] to any port 22
 ```
 
-**Security benefit:** SSH access restricted to known workstation only
+**Screenshot:**
+[Insert screenshot here]
 
-**5. Enable firewall:**
+**Security benefit:**
+- SSH access is restricted to my known workstation IP only
+- Blocks SSH attempts from all other IP addresses
+- Significantly reduces attack surface for SSH brute-force attacks
+
+**My workstation IP:** [Document your actual workstation IP]
+
+---
+
+#### 5. Enabling the Firewall
+
+**Commands executed:**
 ```bash
 sudo ufw enable
 ```
 
-**6. Verify rules:**
+**Screenshot:**
+[Insert screenshot here]
+
+---
+
+#### 6. Verifying Rules
+
+**Commands executed:**
 ```bash
 sudo ufw status numbered
 sudo ufw status verbose
 ```
 
-**Defense-in-Depth Strategy:**
-Multiple layers of security controls:
-1. Firewall (network level)
-2. SSH key authentication (access level)
-3. User privileges (authorization level)
-4. File permissions (data level)
+**Screenshot:**
+[Insert screenshot showing complete firewall ruleset here]
 
-#### Task 3.2: User and Privilege Management
+#### Complete Firewall Ruleset Table
 
-**1. Create non-root administrative user:**
+| Rule # | Action | From | To | Port | Protocol | Justification |
+|--------|--------|------|-----|------|----------|---------------|
+| 1 | ALLOW | [workstation_ip] | Any | 22 | TCP | Allow SSH access from my workstation only |
+| [Add more rules if configured] | | | | | | |
+
+**Defense-in-Depth Strategy Implementation:**
+
+Multiple layers of security are now in place:
+
+1. **Network Level (Firewall):**
+   - UFW blocks unauthorized network connections
+   - Only specific IPs can access SSH port
+
+2. **Access Level (SSH Configuration):**
+   - Key-based authentication required
+   - Password authentication disabled
+   - Root login disabled
+
+3. **Authorization Level (User Privileges):**
+   - Non-root administrative users
+   - Sudo for privilege escalation
+   - Audit trail of privileged actions
+
+4. **Data Level:**
+   - Encrypted SSH communications
+   - Protected private keys with passphrases
+
+**My understanding:**
+[Explain how these layers work together to provide comprehensive security]
+
+---
+
+### Task 3.2: User and Privilege Management
+
+#### 1. Creating Non-Root Administrative User
+
+**Commands executed:**
 ```bash
 sudo adduser adminuser
-# Set strong password when prompted
 ```
 
-**2. Add user to sudo group:**
+**Screenshot:**
+[Insert screenshot showing user creation process with password prompt]
+
+**Password Policy:**
+I set a strong password following these criteria:
+- Minimum 12 characters
+- Mix of uppercase, lowercase, numbers, and symbols
+- Not based on dictionary words
+
+---
+
+#### 2. Adding User to Sudo Group
+
+**Commands executed:**
 ```bash
 sudo usermod -aG sudo adminuser
 ```
 
-**3. Verify group membership:**
+**Screenshot:**
+[Insert screenshot here]
+
+**Explanation of the command:**
+- `usermod`: Modifies a user account
+- `-aG`: Appends (-a) to group (-G) without removing from other groups
+- `sudo`: The group name
+- `adminuser`: The username
+
+---
+
+#### 3. Verifying Group Membership
+
+**Commands executed:**
 ```bash
 groups adminuser
 id adminuser
 ```
 
-**4. Test sudo access:**
+**Screenshot:**
+[Insert screenshot showing group membership here]
+
+**Output explanation:**
+- `groups` command shows all groups the user belongs to
+- `id` command shows user ID (UID), group ID (GID), and all groups
+- Should see "sudo" in the list of groups
+
+---
+
+#### 4. Testing Sudo Access
+
+**Commands executed:**
 ```bash
 su - adminuser
 sudo apt update
-whoami  # Should show adminuser
+whoami
 ```
 
-**5. List users with sudo privileges:**
+**Screenshot:**
+[Insert screenshot showing sudo access test here]
+
+**Verification:**
+- Able to run `sudo apt update` successfully
+- System prompted for adminuser's password
+- Command executed with root privileges
+- `whoami` shows I'm still logged in as adminuser (not root)
+
+---
+
+#### 5. Listing Users with Sudo Privileges
+
+**Commands executed:**
 ```bash
 getent group sudo
 ```
 
-**Principle of Least Privilege:**
-- Users should have minimum permissions necessary
-- Administrative tasks performed with sudo, not as root
+**Screenshot:**
+[Insert screenshot here]
+
+**Current users with sudo privileges:**
+[List the users shown in the output]
+
+---
+
+#### Principle of Least Privilege
+
+**Definition:**
+Users and processes should have only the minimum permissions necessary to perform their tasks.
+
+**How this applies to our configuration:**
+
+1. **Regular Users:**
+   - No administrative privileges by default
+   - Cannot install software or modify system files
+   - Limited to their own files and directories
+
+2. **Administrative Users (with sudo):**
+   - Normal user privileges by default
+   - Can temporarily elevate to root privileges when needed
+   - Must explicitly use `sudo` command
+   - Each sudo command is logged
+
+3. **Root Account:**
+   - Direct login disabled (PermitRootLogin no)
+   - Only accessible via `sudo` from authorized users
+   - Creates accountability trail
+
+**Benefits:**
 - Reduces risk of accidental system damage
 - Provides audit trail of privileged actions
 - Limits damage from compromised accounts
-
-**Why use non-root administrative user:**
-- Prevents accidental system damage
-- Provides accountability (commands logged with username)
-- Requires explicit privilege escalation (sudo)
-- Better security posture
 - Follows security best practices
 
-#### Task 3.3: Remote Administration Evidence
+**Why non-root administrative users are important:**
+[Provide your explanation]
 
-**Execute commands via SSH:**
+---
+
+### Task 3.3: Remote Administration Evidence
+
+#### Remote Command Execution
+
+**Commands executed from workstation:**
+
+**1. System information:**
 ```bash
 ssh username@server_ip 'uname -a'
+```
+[Insert screenshot]
+
+**2. Memory information:**
+```bash
 ssh username@server_ip 'free -h'
+```
+[Insert screenshot]
+
+**3. Disk space:**
+```bash
 ssh username@server_ip 'df -h'
+```
+[Insert screenshot]
+
+**4. Firewall status:**
+```bash
 ssh username@server_ip 'sudo ufw status'
+```
+[Insert screenshot]
+
+**5. SSH service status:**
+```bash
 ssh username@server_ip 'systemctl status sshd'
 ```
+[Insert screenshot]
 
-**Interactive SSH session:**
+---
+
+#### Interactive SSH Session
+
+**Session transcript:**
 ```bash
 ssh username@server_ip
 pwd
@@ -924,174 +704,151 @@ ip addr show
 exit
 ```
 
+**Screenshot:**
+[Insert screenshot showing interactive session with visible command prompts displaying username@hostname for both workstation and server]
+
 **Workstation-to-Server Architecture:**
-- All administration performed remotely via SSH
-- Server console not used directly
-- Demonstrates proper remote administration
-- Command prompts show `username@hostname` for both systems
+
+- **Workstation:** [Your workstation hostname/IP]
+- **Server:** [Your server hostname/IP]
+- **Connection Method:** SSH with key-based authentication
+- **Administration Model:** All server administration performed remotely via SSH
+
+**Evidence Requirements Met:**
+- ✅ Multiple screenshots showing commands executed via SSH
+- ✅ Evidence of workstation-to-server architecture
+- ✅ Command prompts show username@hostname for both systems
+- ✅ Demonstrates that server console is not used directly
 
 ---
 
-## Self-Assessment & Reflection
+## Reflection
 
-### Self-Assessment Questions
+### Challenges Encountered and Resolutions
 
-#### Question 1: Primary distinction between Authentication and Authorization
+**Challenge 1: [Describe a challenge]**
+- **Problem:** [What went wrong]
+- **Solution:** [How you fixed it]
+- **Learning:** [What you learned]
 
-**Authentication:**
-- Verifies identity ("Who are you?")
-- Confirms user is who they claim to be
-- Examples: passwords, biometrics, certificates
-- Occurs first in the AAA framework
-
-**Authorization:**
-- Determines permissions ("What can you do?")
-- Defines what authenticated user can access
-- Examples: file permissions, role assignments
-- Occurs after authentication
-
-**Key Distinction:** Authentication proves identity; authorization grants permissions based on that identity.
-
-#### Question 2: Two common vulnerabilities mitigated by initial security setup
-
-1. **Default Passwords**
-   - Pre-set, easily guessable credentials
-   - Provide direct entry points for attackers
-   - Mitigation: Change all default passwords immediately
-
-2. **Unnecessary Services**
-   - Default installations include many unused services
-   - Each service is a potential attack surface
-   - Mitigation: Disable all non-essential services
-
-**Alternative answers:**
-- Improper file permissions
-- Open network ports
-- Unpatched software
-- Weak encryption protocols
-
-#### Question 3: Key difference between DAC and MAC
-
-**Discretionary Access Control (DAC):**
-- Owner controls access permissions
-- Decentralized management
-- Higher flexibility
-- Lower security level
-- Example: Unix file permissions
-
-**Mandatory Access Control (MAC):**
-- System enforces access based on security labels
-- Centralized policy management
-- Lower flexibility
-- Higher security level
-- Example: SELinux
-
-**Key Difference:** In DAC, resource owners control access; in MAC, the system enforces access based on security policies that users cannot override.
+**Challenge 2: [Describe another challenge]**
+- **Problem:**
+- **Solution:**
+- **Learning:**
 
 ---
 
-## Journal Entry Requirements Summary
+### Security Trade-offs Considered
 
-### Documentation Checklist
+**1. Convenience vs. Security:**
+- Disabling password authentication improves security but requires careful key management
+- If private key is lost and no backup exists, access to server is lost
+- Solution: Keep secure backups of private keys
 
-#### Process Management Section:
-- [ ] Screenshots of `ps aux`, `top`, and `pstree` with explanations
-- [ ] Examples of foreground/background process control
-- [ ] Explanation of process states (R, S, D, Z, T)
-- [ ] Documentation of kill vs kill -9
-- [ ] Reflection on process management concepts
+**2. Access Control vs. Usability:**
+- Restricting SSH to specific IP addresses is very secure
+- However, limits access if I need to connect from a different location
+- Possible solution: VPN access or carefully managed IP whitelist
 
-#### SSH Configuration Section:
-- [ ] SSH key generation evidence
-- [ ] Before and after comparison of `sshd_config` file
-- [ ] Screenshots showing successful passwordless authentication
-- [ ] Explanation of security improvements:
-  - Why ed25519 over RSA
-  - Benefits of PasswordAuthentication no
-  - Why PermitRootLogin no is important
-
-#### Firewall Configuration Section:
-- [ ] Complete firewall ruleset with `sudo ufw status numbered`
-- [ ] Table documenting each rule and its justification
-- [ ] Evidence that SSH accessible only from workstation
-- [ ] Discussion of defense-in-depth strategy
-- [ ] Explanation of default deny/allow policies
-
-#### User Management Section:
-- [ ] User creation and privilege assignment process
-- [ ] List of users with sudo privileges (`getent group sudo`)
-- [ ] Explanation of principle of least privilege
-- [ ] Why non-root administrative users are important
-
-#### Remote Administration Section:
-- [ ] Multiple screenshots showing commands executed via SSH
-- [ ] Evidence of workstation-to-server architecture
-- [ ] Command prompts showing `username@hostname` for both systems
-- [ ] Interactive session examples
-
-#### Reflection Section:
-- [ ] Challenges encountered and resolutions
-- [ ] Security trade-offs considered
-- [ ] Connection between theory (lectures) and practice (lab work)
-- [ ] Lessons learned
-- [ ] Areas for improvement
-
-### Technical Requirements:
-- All screenshots must show visible command prompts with `username@hostname`
-- Include command, output, and explanation for each task
-- Update system architecture diagram to show security controls
-- Commit and push to GitHub:
-  ```bash
-  git add .
-  git commit -m "Week 7: Initial Security Configuration"
-  git push
-  ```
+**3. Root Access Restrictions:**
+- Disabling direct root login adds security layer
+- Adds extra step (sudo) for administrative tasks
+- Benefit outweighs inconvenience due to audit trail and reduced attack surface
 
 ---
 
-## Key Takeaways
+### Connection Between Theory and Practice
 
-1. **Security is Multi-Layered:** The AAA framework provides comprehensive protection through authentication, authorization, and access control
+**From Lectures to Implementation:**
 
-2. **Initial Configuration is Critical:** Proper initial security setup prevents common vulnerabilities like default passwords and unnecessary services
+1. **Process Management Theory:**
+   - Lectures covered process states and lifecycle
+   - Lab gave hands-on experience with `ps`, `top`, `kill` commands
+   - Now understand how processes actually transition between states
 
-3. **Different Security Models Serve Different Needs:** DAC, MAC, and RBAC each have appropriate use cases based on security requirements
+2. **Authentication vs. Authorization:**
+   - Theory explained the difference between these concepts
+   - Practice: SSH keys implement authentication, file permissions implement authorization
+   - Saw how both work together in a real system
 
-4. **Intrusion Detection is Essential:** Both HIDS and NIDS play important roles in detecting and responding to security threats
+3. **Defense-in-Depth:**
+   - Lecture introduced the concept of layered security
+   - Lab implemented multiple layers: firewall, SSH hardening, user privileges
+   - Understand how each layer compensates for potential weaknesses in others
 
-5. **Automation Enhances Security:** Bash scripting enables consistent and efficient security management
-
-6. **Process Management is Fundamental:** Understanding process states and control mechanisms is essential for system administration
-
-7. **SSH Key Authentication is Superior:** Key-based authentication is more secure than password authentication
-
-8. **Firewalls Provide Network Protection:** Properly configured firewall rules restrict unauthorized access
-
-9. **Least Privilege Principle:** Users and processes should have only the minimum permissions necessary
-
-10. **Remote Administration Best Practices:** Secure, auditable remote access is essential for modern system administration
+4. **Principle of Least Privilege:**
+   - Covered in lecture as theoretical security principle
+   - Implemented through non-root users, sudo configuration, file permissions
+   - Appreciate the practical importance of this principle
 
 ---
 
-## Additional Resources
+### Key Learnings
 
-### Moodle Video Lectures:
-- Process Management Fundamentals
-- Understanding System Monitoring Tools
-- Process States and Lifecycle
-- Operating System Structure
+**Technical Skills Gained:**
+- Process monitoring and management using command-line tools
+- SSH key generation and configuration
+- Firewall configuration with UFW
+- User and privilege management in Linux
+- Remote system administration
 
-### Recommended Reading:
-- Linux Security Documentation
-- SELinux User's Guide
-- SSH Protocol Specifications
-- UFW Documentation
+**Security Concepts Reinforced:**
+- Importance of initial security configuration
+- How multiple security layers provide defense-in-depth
+- Practical application of authentication mechanisms
+- Audit trails and accountability
 
-### Practice Exercises:
-- Configure SELinux or AppArmor
-- Write bash scripts for log analysis
-- Implement more complex firewall rules
-- Practice incident response scenarios
+**Best Practices Learned:**
+- Always backup configuration files before modification
+- Test changes in a separate session before closing current session
+- Document all changes for future reference
+- Use strong passphrases for SSH keys
+- Apply principle of least privilege consistently
+
+---
+
+### Areas for Improvement
+
+**What I could do better:**
+1. [Identify areas where you struggled or could improve]
+2. [Additional security measures you could implement]
+3. [Documentation practices you want to enhance]
+
+**Next Steps:**
+- [What you plan to learn or practice next]
+- [Additional security hardening you want to explore]
+
+---
+
+## Conclusion
+
+This week's lab provided hands-on experience with essential system administration and security tasks. The key achievements were:
+
+1. ✅ Successfully configured SSH key-based authentication
+2. ✅ Hardened SSH configuration by disabling password authentication and root login
+3. ✅ Implemented firewall rules to restrict access
+4. ✅ Created and managed users with appropriate privileges
+5. ✅ Demonstrated remote administration capabilities
+6. ✅ Gained practical understanding of process management
+
+The combination of process management and security configuration skills forms a foundation for secure system administration. The defense-in-depth approach implemented through multiple security layers (firewall, SSH hardening, user privileges) demonstrates real-world security best practices.
+
+---
+
+## Technical Requirements Checklist
+
+- [ ] All screenshots show visible command prompts with username@hostname
+- [ ] Each command includes output and explanation
+- [ ] System architecture diagram updated to show security controls
+- [ ] Work committed and pushed to GitHub
+
+**Git commands to run:**
+```bash
+cd /home/kellspell/Desktop/Operating-System/Week-7
+git add Week-7-Journal.md
+git commit -m "Week 7: Initial Security Configuration - Process Management and Security Implementation"
+git push
+```
 
 ---
 

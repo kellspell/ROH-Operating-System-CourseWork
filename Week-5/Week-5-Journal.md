@@ -18,8 +18,7 @@
 8. [Synchronization Primitives](#8-synchronization-primitives)
 9. [IPC in Practice](#9-ipc-in-practice)
 10. [Laboratory Exercises](#10-laboratory-exercises)
-11. [Assessment Requirements](#11-assessment-requirements)
-12. [Review and Key Concepts](#12-review-and-key-concepts)
+11. [Review and Key Concepts](#11-review-and-key-concepts)
 
 ---
 
@@ -645,35 +644,7 @@ rm shared_data.txt data.lock
 
 ---
 
-## 11. Assessment Requirements
-
-### Phase 2: Security Planning and Testing Methodology (Week 2)
-
-Design a security baseline and performance testing methodology.
-
-#### Deliverables (Journal):
-
-1. **Performance Testing Plan**
-   - Describe remote monitoring methodology
-   - Outline testing approach
-   - Define metrics and benchmarks
-
-2. **Security Configuration Checklist**
-   - SSH hardening
-   - Firewall configuration
-   - Mandatory access control
-   - Automatic updates
-   - User privilege management
-   - Network security
-
-3. **Threat Model**
-   - Identify at least 3 specific security threats
-   - Provide mitigation strategies for each threat
-   - Assess risk levels and priorities
-
----
-
-## 12. Review and Key Concepts
+## 11. Review and Key Concepts
 
 ### Key Concepts Summary
 
